@@ -439,24 +439,23 @@
       off
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
-    // 1. Firebase 오리지널 설정 데이터 연동
+    // 1. Firebase 오리지널 설정 데이터 연동 (사용자 원본 그대로 100% 보존)
     const firebaseConfig = {
-  apiKey: "AIzaSyCUxLBJ6sFc6CmmqyP81CozGN8_fTo1mbM",
-  authDomain: "test-a155f.firebaseapp.com",
-  databaseURL: "https://test-a155f-default-rtdb.firebaseio.com",
-  projectId: "test-a155f",
-  storageBucket: "test-a155f.firebasestorage.app",
-  messagingSenderId: "384830685677",
-  appId: "1:384830685677:web:9ae902a851a838981de7e4",
-  measurementId: "G-0RVRLSP6J1"
-};
-
+      apiKey: "AIzaSyCUxLBJ6sFc6CmmqyP81CozGN8_fTo1mbM",
+      authDomain: "test-a155f.firebaseapp.com",
+      databaseURL: "https://test-a155f-default-rtdb.firebaseio.com",
+      projectId: "test-a155f",
+      storageBucket: "test-a155f.firebasestorage.app",
+      messagingSenderId: "384830685677",
+      appId: "1:384830685677:web:9ae902a851a838981de7e4",
+      measurementId: "G-0RVRLSP6J1"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const database = getDatabase(app);
 
-    // 2. 외부 AI Apps Script 전송 엔드포인트 URL
+    // 2. 외부 AI Apps Script 전송 엔드포인트 URL (사용자 원본 주소 보존)
     const CHAT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTS-n6dNxhXGHxck-BL97z9l2PPrqZbl0tqjtPIP44MVFtyOiTwizk4jva8GMuV38p/exec';
     const TTS_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDNMIktE288seW2Mr5YgksYFeAP3SNl8YyQZFa1DuvD0N_8pjRLDmxkZBYyQ4WGPmt/exec';
 
@@ -497,7 +496,7 @@
     let currentUser = null;
     let currentItemsRef = null;
 
-    // --- [시스템 대시보드 탭 스위칭 웅합 엔진] ---
+    // --- [시스템 대시보드 탭 스위칭 융합 엔진] ---
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabPanels = document.querySelectorAll('.tab-panel');
 
@@ -710,7 +709,7 @@
       `;
     };
 
-    // --- [파트 3: ChatGPT AI 브레인 연동 로직] ---
+    // --- [파트 3: ChatGPT AI 브레인 연동 로직 + Database 실시간 자동 연결] ---
     chatAskBtn.addEventListener('click', askChatGPT);
     chatClearBtn.addEventListener('click', () => {
       questionInput.value = '';
@@ -740,11 +739,33 @@
         const data = await response.json();
         if (data.error) throw new Error(data.error);
 
-        answerBox.textContent = data.answer || '리포트 스트림 통신을 수신하지 못했습니다.';
+        const replyText = data.answer || '리포트 스트림 통신을 수신하지 못했습니다.';
+        answerBox.textContent = replyText;
         chatStatusBox.textContent = '종단 연동 및 연구 분석 완료';
+
+        // 🌟 [핵심 연동 기능] 답변 수신 성공 즉시 Firebase Realtime DB에 자동 저장!
+        if (currentUser && data.answer) {
+          try {
+            const itemsRef = ref(database, `users/${currentUser.uid}/items`);
+            const newItemRef = push(itemsRef);
+            
+            // 제목이 너무 길면 자르고 뒤에 ... 붙이기 처리
+            const shortTitle = question.length > 20 ? question.substring(0, 20) + '...' : question;
+
+            await set(newItemRef, {
+              title: `💡 AI 연구로그: ${shortTitle}`,
+              content: replyText,
+              createdAt: new Date().toLocaleString('ko-KR'),
+              updatedAt: ''
+            });
+          } catch (dbError) {
+            console.error("Firebase 실시간 자동저장 에러:", dbError);
+          }
+        }
+
       } catch (error) {
         console.error(error);
-        answerBox.textContent = 'API 프록시 서버 통신 실패:\n\n' + error.message;
+        answerBox.textContent = 'API 프록시 서버 통신 실패:\n\n' + error.message + '\n\n※ 하단 안내에 따라 앱스 스크립트의 배포 권한과 API Key 설정을 확인하세요.';
         chatStatusBox.textContent = '요청 실패 및 세션 거부';
       } finally {
         setChatLoading(false);
@@ -812,7 +833,7 @@
       } catch (error) {
         console.error(error);
         ttsStatusBox.textContent = '오디오 채널 요청 인코딩 에러';
-        alert('사운드 트랙 제작 중 에러 감지:\n\n' + error.message);
+        alert('사운드 트랙 제작 중 에러 감지:\n\n' + error.message + '\n\n※ 하단 안내에 따라 앱스 스크립트 배포 환경을 수정해야 합니다.');
       } finally {
         setTtsLoading(false);
       }
