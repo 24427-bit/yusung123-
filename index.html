@@ -194,7 +194,7 @@
     .list {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
     }
 
     .item {
@@ -204,7 +204,7 @@
       padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       transition: 0.2s;
     }
 
@@ -234,43 +234,66 @@
       margin-top: 4px;
     }
 
+    /* [변경] AI 텍스트 분석 결과 창 스타일링 */
+    .analysis-container {
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid rgba(126, 87, 194, 0.2);
+    }
+
+    .analysis-label {
+      font-size: 12px;
+      color: #00d2ff;
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .item-content {
       margin: 0;
       color: #e2e8f0;
       line-height: 1.7;
       white-space: pre-wrap;
       word-break: break-word;
-      background: rgba(15, 23, 42, 0.3);
-      padding: 16px;
-      border-radius: 12px;
-      border-left: 4px solid #7e57c2;
       font-size: 15px;
     }
 
-    /* 오디오 플레이어 커스텀 레이아웃 */
+    /* [변경] TTS 오디오 가이드 창 완벽 분리 스타일링 */
     .audio-container {
       background: rgba(15, 23, 42, 0.5);
-      padding: 12px 16px;
+      padding: 14px 16px;
       border-radius: 12px;
+      border: 1px solid rgba(167, 139, 250, 0.2);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
+
     .audio-label {
       font-size: 12px;
       color: #a78bfa;
       font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
+
     audio {
       width: 100%;
-      height: 36px;
+      height: 40px;
+      outline: none;
     }
 
     .item-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 6px;
+      margin-top: 4px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .item-date {
@@ -409,7 +432,6 @@
       appId: "1:384830685677:web:9ae902a851a838981de7e4",
       measurementId: "G-0RVRLSP6J1"
     };
-    
     // Google Apps Script 연동 통합 백엔드 URL
     const APPS_SCRIPT_CHAT_URL = 'https://script.google.com/macros/s/AKfycbwiegXliLwbh9qL7Mk1MoUnV4H-H91wIn2RVmrs1izNX5Js1snWVVEr4pB25cxvfKA/exec';
     const APPS_SCRIPT_TTS_URL = 'https://script.google.com/macros/s/AKfycbwiegXliLwbh9qL7Mk1MoUnV4H-H91wIn2RVmrs1izNX5Js1snWVVEr4pB25cxvfKA/exec';
@@ -511,7 +533,6 @@
         setStatus('🚀 1단계: AI 물리학자가 원리를 심층 분석하는 중...');
 
         // Step A: ChatGPT 연동 GAS 서버로 물리 답변 요청
-        // 물리학자 페르소나 부여 및 가독성 좋은 포맷 강제
         const promptText = `너는 아주 친절하고 전문적인 물리학 교수이자 박사야. 다음 일상 현상에 대해 고등학생도 직관적으로 이해할 수 있도록 명쾌하고 흥미롭게 설명해줘. 핵심 법칙이나 수식이 필요하다면 포함해도 좋아. 짧고 명확하게 4-5문장 이내로 작성해줘: "${title}"`;
         const chatResponse = await fetch(APPS_SCRIPT_CHAT_URL, {
           method: 'POST',
@@ -538,7 +559,6 @@
         if (ttsData.error) throw new Error(ttsData.error);
         if (!ttsData.audioBase64) throw new Error('음성 데이터를 인코딩하지 못했습니다.');
         
-        // 데이터 전송 최적화를 위해 Data URL 형식으로 포맷팅하여 DB 저장 준비
         const audioDataUrl = `data:audio/mpeg;base64,${ttsData.audioBase64}`;
 
         setStatus('💾 3단계: 완성된 콘텐츠를 아카이브에 영구 저장하는 중...');
@@ -586,7 +606,6 @@
         div.className = 'item';
         div.id = `item-${id}`;
 
-        // 본인이 작성한 글일 때만 수정/삭제 버튼 노출 제어
         const isMyPost = currentUser && currentUser.uid === item.uid;
         const actionButtons = isMyPost ? `
           <div class="item-actions">
@@ -595,6 +614,7 @@
           </div>
         ` : '';
 
+        // [구조 수정] 분석창(.analysis-container)과 오디오창(.audio-container)을 완전히 형제 노드로 분리
         div.innerHTML = `
           <div class="item-header">
             <div>
@@ -602,16 +622,19 @@
               <div class="item-author">제보 연구원: ${escapeHTML(item.author || '익명')}</div>
             </div>
           </div>
-          <div>
-            <div class="form-label" style="font-size:12px; margin-bottom:4px; color:#a78bfa;">🎓 AI 물리학자 분석 정해</div>
+          
+          <div class="analysis-container">
+            <div class="analysis-label">🎓 AI 물리학자 분석 정해</div>
             <p class="item-content">${escapeHTML(item.content || '')}</p>
           </div>
+          
           ${item.audioData ? `
             <div class="audio-container">
-              <div class="audio-label">🎧 음성 오디오 가이드 피드</div>
+              <div class="audio-label">🎧 오디오 보이스 도슨트 가이드</div>
               <audio src="${item.audioData}" controls preload="none"></audio>
             </div>
           ` : ''}
+          
           <div class="item-footer">
             <div class="item-date">
               등록: ${item.createdAt || '-'} ${item.updatedAt ? ` / 수정: ${item.updatedAt}` : ''}
@@ -623,7 +646,7 @@
       });
     }
 
-    // 6. 데이터 수정 및 삭제 바인딩 (window 객체에 할당하여 인라인 HTML 호출 대응)
+    // 6. 데이터 수정 및 삭제 바인딩
     window.deleteData = async function(id) {
       if (!currentUser) return;
       if (!confirm('해당 아카이브 데이터를 완전히 삭제하시겠습니까?')) return;
