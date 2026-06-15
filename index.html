@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>공학 연구 통합 AI 대시보드</title>
+  <title>일상 속 물리 아카이브 (Physics Archive)</title>
   <style>
+    /* 우주와 실험실 느낌의 사이버 랩(Cyber Lab) 다크 테마 스타일링 */
     * {
       box-sizing: border-box;
     }
@@ -12,408 +13,369 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #e3f2fd, #fce4ec);
-      font-family: Arial, sans-serif;
-      color: #333;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #f1f5f9;
+      padding-bottom: 40px;
     }
 
     .container {
       width: min(1000px, 94%);
       margin: 40px auto;
-      background: #ffffff;
+      background: rgba(30, 41, 59, 0.7);
       border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.16);
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
     }
 
     h1 {
       margin: 0 0 8px;
       text-align: center;
-      font-size: 28px;
-    }
-
-    h2 {
-      margin-top: 0;
-      font-size: 22px;
+      font-size: 32px;
+      background: linear-gradient(to right, #00d2ff, #7e57c2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
     .subtitle {
       text-align: center;
-      color: #777;
-      margin-bottom: 28px;
-      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 32px;
+      font-size: 15px;
     }
 
     /* 인증 섹션 */
     .auth-box {
-      max-width: 420px;
-      margin: 0 auto;
+      max-width: 400px;
+      margin: 20px auto;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
-    .notice {
-      max-width: 620px;
-      margin: 20px auto 0;
-      padding: 14px;
-      border-radius: 14px;
-      background: #fff8e1;
-      color: #6d4c41;
-      font-size: 14px;
-      line-height: 1.6;
+    .auth-box h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      color: #38bdf8;
+      text-align: center;
     }
 
-    /* 상단 유저 바 */
+    .notice {
+      max-width: 400px;
+      margin: 12px auto 0;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.1);
+      color: #bae6fd;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* 메인 콘텐츠 섹션 */
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 22px;
-      padding: 14px;
+      margin-bottom: 24px;
+      padding: 14px 20px;
       border-radius: 16px;
-      background: #f7f9fb;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .user-info {
       font-size: 14px;
-      color: #555;
-      word-break: break-all;
+      color: #cbd5e1;
     }
 
-    /* 탭 네비게이션 */
-    .tab-navigation {
+    .user-info strong {
+      color: #38bdf8;
+    }
+
+    .form-box {
+      background: rgba(15, 23, 42, 0.4);
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin-bottom: 32px;
       display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      border-bottom: 2px solid #edf1f5;
-      padding-bottom: 12px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .tab-btn {
-      background: #f0f4f8;
-      color: #555;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 20px;
+    .form-label {
       font-size: 14px;
-      cursor: pointer;
       font-weight: bold;
-      transition: 0.15s;
+      color: #38bdf8;
     }
 
-    .tab-btn:hover {
-      background: #e2e8f0;
-    }
-
-    .tab-btn.active {
-      background: #42a5f5;
-      color: white;
-    }
-
-    /* 공통 입력창 및 버튼 */
-    input, select, textarea {
-      padding: 14px;
-      border: 1px solid #ddd;
+    input, textarea, select {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
       border-radius: 12px;
+      color: #f1f5f9;
       font-size: 15px;
       outline: none;
-      font-family: Arial, sans-serif;
+      transition: 0.2s;
     }
 
-    input:focus, select:focus, textarea:focus {
-      border-color: #42a5f5;
-      box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.15);
+    input { height: 46px; padding: 0 14px; }
+    select { height: 44px; padding: 0 12px; }
+    textarea { min-height: 100px; padding: 14px; resize: vertical; font-family: inherit; }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
     }
 
-    input { height: 46px; }
-    select { height: 44px; }
-    textarea { width: 100%; resize: vertical; line-height: 1.5; }
+    .config-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
+    /* 버튼 스타일링 */
     button {
       border: none;
       border-radius: 12px;
-      padding: 0 18px;
+      padding: 0 20px;
       height: 46px;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
-      transition: 0.15s;
+      transition: 0.2s;
       font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     button:hover {
       transform: translateY(-2px);
-      opacity: 0.9;
+      opacity: 0.95;
     }
 
     button:disabled {
       cursor: not-allowed;
-      opacity: 0.6;
-      transform: none;
+      opacity: 0.5;
+      transform: none !important;
     }
 
-    /* 버튼 색상 커스텀 */
-    .login-btn { background: #42a5f5; color: white; }
-    .signup-btn { background: #7e57c2; color: white; }
-    .logout-btn { background: #455a64; color: white; }
-    .add-btn { background: #42a5f5; color: white; }
-    .refresh-btn { background: #66bb6a; color: white; margin-bottom: 16px; }
-    .edit-btn { background: #ffca28; color: #333; }
-    .delete-btn { background: #ef5350; color: white; }
-    .save-btn { background: #7e57c2; color: white; }
-    .cancel-btn { background: #b0bec5; color: white; }
-    .ask-btn { background: #42a5f5; color: white; }
-    .clear-btn { background: #b0bec5; color: white; }
-    .make-btn { background: #42a5f5; color: white; }
-
-    .download-link {
-      border: none;
-      border-radius: 12px;
-      padding: 0 18px;
-      height: 46px;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.15s;
-      font-weight: bold;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #7e57c2;
-      color: white;
-    }
-    .download-link:hover { transform: translateY(-2px); opacity: 0.9; }
-
-    /* 레이아웃 구성 요소 */
-    .info {
-      padding: 14px;
-      margin-bottom: 20px;
-      border-radius: 14px;
-      background: #e8f5e9;
-      color: #2e7d32;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .chat-box {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .button-row {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-
-    .answer-box {
-      min-height: 220px;
-      padding: 18px;
-      border-radius: 18px;
-      background: #f7f9fb;
-      border: 1px solid #edf1f5;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+    .login-btn { background: #38bdf8; color: #0f172a; }
+    .signup-btn { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .logout-btn { background: #475569; color: #f1f5f9; height: 38px; font-size: 13px; }
+    .add-btn { background: linear-gradient(to right, #00d2ff, #7e57c2); color: white; width: 100%; font-size: 16px; margin-top: 6px; }
+    .edit-btn { background: #eab308; color: #0f172a; height: 34px; font-size: 13px; padding: 0 12px; }
+    .delete-btn { background: #ef4444; color: white; height: 34px; font-size: 13px; padding: 0 12px; }
+    .save-btn { background: #10b981; color: white; height: 38px; }
+    .cancel-btn { background: #64748b; color: white; height: 38px; }
 
     .status {
       min-height: 24px;
-      color: #555;
+      margin-bottom: 16px;
+      color: #94a3b8;
       font-size: 14px;
-      margin-top: 8px;
+      text-align: center;
+      font-style: italic;
     }
 
-    .label {
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .help {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #777;
-      line-height: 1.6;
-    }
-
-    .option-box {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .result-box {
-      margin-top: 20px;
-      padding: 18px;
-      border-radius: 18px;
-      background: #f7f9fb;
-      border: 1px solid #edf1f5;
-    }
-
-    audio {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    /* 실시간 데이터베이스 스타일 */
-    .form-box {
-      display: grid;
-      grid-template-columns: 1fr 2fr auto;
-      gap: 10px;
-      margin-bottom: 22px;
-    }
-
+    /* 아카이브 피드 리스트 */
     .list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 20px;
     }
 
     .item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 16px;
-      border-radius: 16px;
-      background: #f7f9fb;
-      border: 1px solid #edf1f5;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: 0.2s;
     }
 
-    .item-title { margin: 0 0 6px; font-size: 18px; font-weight: bold; }
-    .item-content { margin: 0; color: #555; line-height: 1.5; word-break: break-all; }
-    .item-date { margin-top: 8px; font-size: 12px; color: #999; }
-    .item-actions { display: flex; gap: 8px; }
-    .edit-box { display: grid; grid-template-columns: 1fr 2fr auto auto; gap: 8px; width: 100%; }
-    .empty { text-align: center; padding: 30px; color: #888; background: #f7f9fb; border-radius: 16px; }
+    .item:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .item-title {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+      color: #38bdf8;
+      line-height: 1.4;
+    }
+
+    .item-author {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .item-content {
+      margin: 0;
+      color: #e2e8f0;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 16px;
+      border-radius: 12px;
+      border-left: 4px solid #7e57c2;
+      font-size: 15px;
+    }
+
+    /* 오디오 플레이어 커스텀 레이아웃 */
+    .audio-container {
+      background: rgba(15, 23, 42, 0.5);
+      padding: 12px 16px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .audio-label {
+      font-size: 12px;
+      color: #a78bfa;
+      font-weight: bold;
+    }
+    audio {
+      width: 100%;
+      height: 36px;
+    }
+
+    .item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .item-date {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .edit-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .edit-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: #64748b;
+      background: rgba(15, 23, 42, 0.3);
+      border-radius: 16px;
+      border: 1px dashed rgba(255, 255, 255, 0.05);
+      font-style: italic;
+    }
 
     .hidden {
       display: none !important;
     }
 
     @media (max-width: 700px) {
-      .form-box, .item, .edit-box, .option-box {
-        grid-template-columns: 1fr;
-      }
-      .button-row { justify-content: stretch; }
-      button, .download-link { width: 100%; }
-      .item-actions { justify-content: flex-end; }
+      .container { padding: 20px; margin: 16px auto; }
+      .config-row { grid-template-columns: 1fr; }
+      .item-header { flex-direction: column; gap: 8px; }
+      .item-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .item-actions { width: 100%; justify-content: flex-end; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>공학 연구 통합 AI 대시보드</h1>
-    <div class="subtitle">Firebase + ChatGPT + TTS 융합 포트폴리오 웹사이트</div>
+    <h1>일상 속 물리 아카이브</h1>
+    <div class="subtitle">궁금한 일상 현상을 던지면, AI 물리학자가 원리를 분석하고 오디오 가이드를 제공합니다.</div>
 
     <section id="authSection">
       <div class="auth-box">
-        <h2>로그인 / 회원가입</h2>
-        <input id="emailInput" type="email" placeholder="이메일" />
-        <input id="passwordInput" type="password" placeholder="비밀번호 6자리 이상" />
+        <h2>실험실 입장 (로그인)</h2>
+        <input id="emailInput" type="email" placeholder="이메일 주소" />
+        <input id="passwordInput" type="password" placeholder="비밀번호 (6자리 이상)" />
         <button class="login-btn" id="loginBtn">로그인</button>
-        <button class="signup-btn" id="signupBtn">회원가입</button>
+        <button class="signup-btn" id="signupBtn">연구원 등록 (회원가입)</button>
       </div>
       <div class="notice">
-        처음 사용하는 이메일은 회원가입을 먼저 누르세요.<br />
-        이미 가입한 이메일은 로그인 버튼을 누르면 됩니다.
+        💡 질문을 등록하려면 로그인이 필요합니다.<br />
+        로그인하지 않아도 다른 연구원들이 구축한 아카이브는 자유롭게 청취 및 열람할 수 있습니다.
       </div>
     </section>
 
-    <section id="mainSection" class="hidden">
-      <div class="top-bar">
-        <div class="user-info">
-          연구원 계정: <strong id="userEmail"></strong>
-        </div>
-        <button class="logout-btn" id="logoutBtn">로그아웃</button>
-      </div>
-
-      <div class="api-key-box" style="margin-bottom: 24px; padding: 18px; background: #fff3e0; border: 2px solid #ffb74d; border-radius: 16px;">
-        <div class="label" style="color: #e65100; font-size: 16px;">🔑 해결책: OpenAI 다이렉트 연결 (구글 서버 무시)</div>
-        <div style="font-size: 14px; color: #d84315; margin-bottom: 12px; line-height: 1.5;">
-          구글 Apps Script 오류("요청 실패 및 세션 거부")가 뜰 경우, 아래에 <strong>OpenAI API Key(sk-...)</strong>를 직접 입력하세요.<br/>
-          입력하는 즉시 고장난 구글 서버를 거치지 않고 100% 정상 작동합니다!
-        </div>
-        <input id="openAiKeyInput" type="password" placeholder="sk- 로 시작하는 OpenAI API Key를 여기에 붙여넣으세요" style="border-color: #ffb74d; width: 100%; background: #ffffff;" />
-      </div>
-
-      <div class="tab-navigation">
-        <button class="tab-btn active" data-tab="chatTab">AI 연구 어시스턴트 (ChatGPT)</button>
-        <button class="tab-btn" data-tab="ttsTab">AI 음성 변환기 (TTS)</button>
-        <button class="tab-btn" data-tab="dbTab">연구 데이터 로그 (Database)</button>
-      </div>
-
-      <div id="chatTab" class="tab-panel">
-        <div class="chat-box">
-          <div>
-            <div class="label">공학 연구 및 개발 질문</div>
-            <textarea id="questionInput" placeholder="질문을 입력하세요. 예: 고등학생 수준에서 탐구 가능한 생명공학 관련 인공지능 활용 실험 보고서 목차를 짜줘."></textarea>
+    <section id="mainSection">
+      <div id="writeArea" class="hidden">
+        <div class="top-bar">
+          <div class="user-info">
+            접속 연구원: <strong id="userEmail"></strong>
           </div>
-          <div class="button-row">
-            <button class="clear-btn" id="chatClearBtn">초기화</button>
-            <button class="ask-btn" id="chatAskBtn">질문하기</button>
-          </div>
-          <div id="chatStatus" class="status"></div>
-          <div>
-            <div class="label">AI 답변 결과 리포트</div>
-            <div id="answerBox" class="answer-box">아직 답변이 없습니다.</div>
-          </div>
-          <div class="help">
-            단축키: 질문 입력창에서 <strong>Ctrl + Enter</strong>를 누르면 질문이 전송됩니다.
-          </div>
+          <button class="logout-btn" id="logoutBtn">연구실 퇴실 (로그아웃)</button>
         </div>
-      </div>
 
-      <div id="ttsTab" class="tab-panel hidden">
-        <div class="option-box">
-          <select id="modelSelect">
-            <option value="tts-1">tts-1 빠른 생성</option>
-            <option value="tts-1-hd">tts-1-hd 고품질</option>
-          </select>
-          <select id="voiceSelect">
-            <option value="alloy">alloy (기본)</option>
-            <option value="echo">echo</option>
-            <option value="fable">fable</option>
-            <option value="onyx">onyx (남성향)</option>
-            <option value="nova">nova (여성향)</option>
-            <option value="shimmer">shimmer</option>
-          </select>
-          <input id="speedInput" type="number" min="0.25" max="4.0" step="0.05" value="1.0" placeholder="배속 설정" />
-        </div>
-        <div>
-          <div class="label">음성 오디오 변환 텍스트 입력</div>
-          <textarea id="textInput" placeholder="음성 파일로 만들 문장을 입력하세요. 위 탭의 AI 답변 내용을 복사해 붙여넣으면 멋진 브리핑 오디오 리포트가 완성됩니다."></textarea>
-        </div>
-        <div class="button-row">
-          <button class="clear-btn" id="ttsClearBtn">초기화</button>
-          <button class="make-btn" id="ttsMakeBtn">음성 만들기</button>
-        </div>
-        <div id="ttsStatus" class="status"></div>
-        <div id="ttsResultBox" class="result-box hidden">
-          <div class="label">생성 완료 오디오 플레이어</div>
-          <audio id="audioPlayer" controls></audio>
-          <div class="button-row">
-            <a id="downloadLink" class="download-link" href="#" download="tts-audio.mp3">mp3 리포트 다운로드</a>
-          </div>
-        </div>
-      </div>
-
-      <div id="dbTab" class="tab-panel hidden">
         <div class="form-box">
-          <input id="titleInput" type="text" placeholder="실험/인사이트 제목 입력" />
-          <input id="contentInput" type="text" placeholder="세부 연구 데이터 및 결과 요약 입력" />
-          <button class="add-btn" id="addBtn">기록 추가</button>
+          <div class="form-label">🔬 분석할 일상 속 현상 질문</div>
+          <input id="titleInput" type="text" placeholder="예: 뜨거운 물이 찬물보다 왜 더 빨리 얼까요? (음펨바 효과)" />
+          
+          <div class="config-row">
+            <div>
+              <div class="form-label">🗣️ 안내 음성 보이스</div>
+              <select id="voiceSelect">
+                <option value="onyx">Onyx (신뢰감 주는 남성)</option>
+                <option value="nova">Nova (차분한 여성)</option>
+                <option value="alloy">Alloy (중성적이고 깔끔함)</option>
+                <option value="echo">Echo (에너지 넘치는 스타일)</option>
+                <option value="shimmer">Shimmer (부드럽고 지적인 스타일)</option>
+              </select>
+            </div>
+            <div>
+              <div class="form-label">⚡ 낭독 속도</div>
+              <input id="speedInput" type="number" min="0.5" max="2.0" step="0.1" value="1.0" />
+            </div>
+          </div>
+
+          <button class="add-btn" id="addBtn">🧬 AI 물리학자에게 분석 요청하기</button>
         </div>
-        <button class="refresh-btn" id="refreshBtn">동기화 새로고침</button>
-        <div id="dbStatus" class="status"></div>
-        <div id="dataList" class="list"></div>
       </div>
+
+      <div id="status" class="status">아카이브 데이터를 동기화하는 중...</div>
+      
+      <div class="form-label" style="margin-bottom: 12px; font-size: 16px;">📚 축적된 아카이브 피드</div>
+      <div id="dataList" class="list"></div>
     </section>
   </div>
 
@@ -430,13 +392,13 @@
       getDatabase,
       ref,
       push,
+      set,
       update,
       remove,
-      onValue,
-      off
+      onValue
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
-    // 1. Firebase 오리지널 설정 데이터 연동 (사용자 원본 그대로 100% 보존!)
+    // Firebase 설정 정보 유지
     const firebaseConfig = {
       apiKey: "AIzaSyCUxLBJ6sFc6CmmqyP81CozGN8_fTo1mbM",
       authDomain: "test-a155f.firebaseapp.com",
@@ -447,222 +409,299 @@
       appId: "1:384830685677:web:9ae902a851a838981de7e4",
       measurementId: "G-0RVRLSP6J1"
     };
+    
+    // Google Apps Script 연동 통합 백엔드 URL
+    const APPS_SCRIPT_CHAT_URL = 'https://script.google.com/macros/s/AKfycbwiegXliLwbh9qL7Mk1MoUnV4H-H91wIn2RVmrs1izNX5Js1snWVVEr4pB25cxvfKA/exec';
+    const APPS_SCRIPT_TTS_URL = 'https://script.google.com/macros/s/AKfycbwiegXliLwbh9qL7Mk1MoUnV4H-H91wIn2RVmrs1izNX5Js1snWVVEr4pB25cxvfKA/exec';
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const database = getDatabase(app);
 
-    // 2. 외부 구글 Apps Script 전송 엔드포인트 URL
-    const CHAT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTS-n6dNxhXGHxck-BL97z9l2PPrqZbl0tqjtPIP44MVFtyOiTwizk4jva8GMuV38p/exec';
-    const TTS_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDNMIktE288seW2Mr5YgksYFeAP3SNl8YyQZFa1DuvD0N_8pjRLDmxkZBYyQ4WGPmt/exec';
-
-    // DOM 요소 바인딩
-    const openAiKeyInput = document.getElementById('openAiKeyInput');
+    // DOM 요소 탐색
     const authSection = document.getElementById('authSection');
-    const mainSection = document.getElementById('mainSection');
+    const writeArea = document.getElementById('writeArea');
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
     const loginBtn = document.getElementById('loginBtn');
     const signupBtn = document.getElementById('signupBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const userEmail = document.getElementById('userEmail');
-
-    const questionInput = document.getElementById('questionInput');
-    const answerBox = document.getElementById('answerBox');
-    const chatStatusBox = document.getElementById('chatStatus');
-    const chatAskBtn = document.getElementById('chatAskBtn');
-    const chatClearBtn = document.getElementById('chatClearBtn');
-
-    const textInput = document.getElementById('textInput');
-    const modelSelect = document.getElementById('modelSelect');
+    
+    const titleInput = document.getElementById('titleInput');
     const voiceSelect = document.getElementById('voiceSelect');
     const speedInput = document.getElementById('speedInput');
-    const ttsMakeBtn = document.getElementById('ttsMakeBtn');
-    const ttsClearBtn = document.getElementById('ttsClearBtn');
-    const ttsStatusBox = document.getElementById('ttsStatus');
-    const ttsResultBox = document.getElementById('ttsResultBox');
-    const audioPlayer = document.getElementById('audioPlayer');
-    const downloadLink = document.getElementById('downloadLink');
-
-    const titleInput = document.getElementById('titleInput');
-    const contentInput = document.getElementById('contentInput');
     const addBtn = document.getElementById('addBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
     const dataList = document.getElementById('dataList');
-    const dbStatusBox = document.getElementById('dbStatus');
+    const statusBox = document.getElementById('status');
 
     let currentUser = null;
-    let currentItemsRef = null;
 
-    // --- [시스템 대시보드 탭 스위칭] ---
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabPanels = document.querySelectorAll('.tab-panel');
-
-    tabButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const targetTab = button.dataset.tab;
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabPanels.forEach(panel => panel.classList.add('hidden'));
-        button.classList.add('active');
-        document.getElementById(targetTab).classList.remove('hidden');
-      });
-    });
-
-    // --- [파트 1: Firebase Auth] ---
-    function getEmailAndPassword() {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-      if (!email || !password) {
-        alert('이메일과 비밀번호를 모두 입력해주세요.');
-        return null;
-      }
-      return { email, password };
+    function setStatus(message) {
+      statusBox.textContent = message;
     }
 
+    // 1. 회원가입 및 로그인 처리
     signupBtn.addEventListener('click', async () => {
-      const account = getEmailAndPassword();
-      if (!account) return;
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      if(!email || !password) return alert('이메일과 비밀번호를 입력해주세요.');
       try {
-        await createUserWithEmailAndPassword(auth, account.email, account.password);
-        alert('회원가입이 성공적으로 완료되었습니다.');
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert('연구원으로 등록되었습니다!');
       } catch (error) {
         alert(getKoreanErrorMessage(error.code));
       }
     });
 
     loginBtn.addEventListener('click', async () => {
-      const account = getEmailAndPassword();
-      if (!account) return;
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      if(!email || !password) return alert('이메일과 비밀번호를 입력해주세요.');
       try {
-        await signInWithEmailAndPassword(auth, account.email, account.password);
+        await signInWithEmailAndPassword(auth, email, password);
       } catch (error) {
         alert(getKoreanErrorMessage(error.code));
       }
     });
 
     logoutBtn.addEventListener('click', async () => {
-      try {
-        await signOut(auth);
-      } catch (error) {}
+      try { await signOut(auth); } catch (error) { alert('로그아웃 실패'); }
     });
 
+    // 2. 인증 상태 변화 감지 (글쓰기 영역 권한 제어 및 실시간 데이터 로드)
     onAuthStateChanged(auth, (user) => {
       if (user) {
         currentUser = user;
-        showMainPage(user);
-        startRealtimeDataListener(user.uid);
+        authSection.classList.add('hidden');
+        writeArea.classList.remove('hidden');
+        userEmail.textContent = user.email;
+        emailInput.value = ''; passwordInput.value = '';
       } else {
         currentUser = null;
-        showAuthPage();
-        stopRealtimeDataListener();
+        authSection.classList.remove('hidden');
+        writeArea.classList.add('hidden');
+        userEmail.textContent = '';
       }
     });
 
-    function showMainPage(user) {
-      authSection.classList.add('hidden');
-      mainSection.classList.remove('hidden');
-      userEmail.textContent = user.email;
-      emailInput.value = '';
-      passwordInput.value = '';
+    // 3. 글로벌 아카이브 동기화 (전체 공유 피드: 'archive' 노드 사용)
+    const globalArchiveRef = ref(database, 'archive');
+    onValue(globalArchiveRef, (snapshot) => {
+      const data = snapshot.val();
+      renderData(data);
+      setStatus('실시간 아카이브 데이터 동기화 완료');
+    }, (error) => {
+      console.error(error);
+      setStatus('데이터를 불러오지 못했습니다. 보안 규칙을 확인하세요.');
+    });
+
+    // 4. 질문 등록 + AI 분석 + TTS 음성 합성 동시 실행 및 저장
+    addBtn.addEventListener('click', async () => {
+      if (!currentUser) return alert('로그인이 필요합니다.');
+      
+      const title = titleInput.value.trim();
+      const voice = voiceSelect.value;
+      const speed = Number(speedInput.value || 1.0);
+
+      if (!title) return alert('분석하고 싶은 물리 현상 질문을 입력해주세요.');
+
+      try {
+        setLoading(true);
+        setStatus('🚀 1단계: AI 물리학자가 원리를 심층 분석하는 중...');
+
+        // Step A: ChatGPT 연동 GAS 서버로 물리 답변 요청
+        // 물리학자 페르소나 부여 및 가독성 좋은 포맷 강제
+        const promptText = `너는 아주 친절하고 전문적인 물리학 교수이자 박사야. 다음 일상 현상에 대해 고등학생도 직관적으로 이해할 수 있도록 명쾌하고 흥미롭게 설명해줘. 핵심 법칙이나 수식이 필요하다면 포함해도 좋아. 짧고 명확하게 4-5문장 이내로 작성해줘: "${title}"`;
+        const chatResponse = await fetch(APPS_SCRIPT_CHAT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ question: promptText })
+        });
+        const chatData = await chatResponse.json();
+        if (chatData.error) throw new Error(chatData.error);
+        const aiAnswer = chatData.answer || '답변을 생성하지 못했습니다.';
+
+        setStatus('🔊 2단계: 분석된 내용을 기반으로 AI 가이드 음성을 합성하는 중...');
+
+        // Step B: 생성된 답변을 바탕으로 OpenAI TTS GAS 서버로 오디오 생성 요청
+        const ttsResponse = await fetch(APPS_SCRIPT_TTS_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            type: 'tts',
+            text: aiAnswer,
+            model: 'tts-1',
+            voice: voice,
+            speed: speed
+          })
+        });
+        const ttsData = await ttsResponse.json();
+        if (ttsData.error) throw new Error(ttsData.error);
+        if (!ttsData.audioBase64) throw new Error('음성 데이터를 인코딩하지 못했습니다.');
+        
+        // 데이터 전송 최적화를 위해 Data URL 형식으로 포맷팅하여 DB 저장 준비
+        const audioDataUrl = `data:audio/mpeg;base64,${ttsData.audioBase64}`;
+
+        setStatus('💾 3단계: 완성된 콘텐츠를 아카이브에 영구 저장하는 중...');
+
+        // Step C: Firebase Realtime Database 전역 공간에 통합 저장
+        const newPostRef = push(globalArchiveRef);
+        await set(newPostRef, {
+          title: title,
+          content: aiAnswer,
+          audioData: audioDataUrl,
+          uid: currentUser.uid,
+          author: currentUser.email,
+          createdAt: new Date().toLocaleString('ko-KR'),
+          updatedAt: ''
+        });
+
+        titleInput.value = '';
+        setStatus('🎉 아카이브 등록 성공!');
+      } catch (error) {
+        console.error(error);
+        setStatus('요청 처리 실패');
+        alert('오류가 발생했습니다: ' + error.message);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    function setLoading(isLoading) {
+      addBtn.disabled = isLoading;
+      addBtn.textContent = isLoading ? '🧬 원리 분석 및 음성 합성 중...' : '🧬 AI 물리학자에게 분석 요청하기';
     }
 
-    function showAuthPage() {
-      authSection.classList.remove('hidden');
-      mainSection.classList.add('hidden');
-      userEmail.textContent = '';
+    // 5. 아카이브 피드 화면 렌더링
+    function renderData(data) {
       dataList.innerHTML = '';
-    }
+      if (!data) {
+        dataList.innerHTML = '<div class="empty">아직 축적된 물리 아카이브가 없습니다. 첫 질문을 던져보세요!</div>';
+        return;
+      }
 
-    // --- [파트 2: Firebase Realtime Database 제어 엔진] ---
-    function startRealtimeDataListener(uid) {
-      stopRealtimeDataListener();
-      currentItemsRef = ref(database, `users/${uid}/items`);
-      onValue(currentItemsRef, (snapshot) => {
-        const data = snapshot.val();
-        renderData(data);
-        dbStatusBox.textContent = '데이터가 클라우드와 실시간 동기화 상태입니다.';
+      const entries = Object.entries(data).reverse(); // 최신글 상단 배치
+
+      entries.forEach(([id, item]) => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.id = `item-${id}`;
+
+        // 본인이 작성한 글일 때만 수정/삭제 버튼 노출 제어
+        const isMyPost = currentUser && currentUser.uid === item.uid;
+        const actionButtons = isMyPost ? `
+          <div class="item-actions">
+            <button class="edit-btn" onclick="showEditForm('${id}', '${escapeForAttribute(item.title || '')}', '${escapeForAttribute(item.content || '')}')">설명 수정</button>
+            <button class="delete-btn" onclick="deleteData('${id}')">삭제</button>
+          </div>
+        ` : '';
+
+        div.innerHTML = `
+          <div class="item-header">
+            <div>
+              <p class="item-title">❓ ${escapeHTML(item.title || '')}</p>
+              <div class="item-author">제보 연구원: ${escapeHTML(item.author || '익명')}</div>
+            </div>
+          </div>
+          <div>
+            <div class="form-label" style="font-size:12px; margin-bottom:4px; color:#a78bfa;">🎓 AI 물리학자 분석 정해</div>
+            <p class="item-content">${escapeHTML(item.content || '')}</p>
+          </div>
+          ${item.audioData ? `
+            <div class="audio-container">
+              <div class="audio-label">🎧 음성 오디오 가이드 피드</div>
+              <audio src="${item.audioData}" controls preload="none"></audio>
+            </div>
+          ` : ''}
+          <div class="item-footer">
+            <div class="item-date">
+              등록: ${item.createdAt || '-'} ${item.updatedAt ? ` / 수정: ${item.updatedAt}` : ''}
+            </div>
+            ${actionButtons}
+          </div>
+        `;
+        dataList.appendChild(div);
       });
     }
 
-    function stopRealtimeDataListener() {
-      if (currentItemsRef) {
-        off(currentItemsRef);
-        currentItemsRef = null;
-      }
-    }
-
-    addBtn.addEventListener('click', async () => {
-      if (!currentUser) return;
-      const title = titleInput.value.trim();
-      const content = contentInput.value.trim();
-      if (!title || !content) return;
-      try {
-        const itemsRef = ref(database, `users/${currentUser.uid}/items`);
-        // push 함수 사용 방식 변경하여 오류 수정
-        await push(itemsRef, { title, content, createdAt: new Date().toLocaleString('ko-KR'), updatedAt: '' });
-        titleInput.value = ''; contentInput.value = '';
-      } catch (error) { alert('데이터 베이스 기록 적재에 실패했습니다.'); }
-    });
-
-    refreshBtn.addEventListener('click', () => {
-      if (currentUser) startRealtimeDataListener(currentUser.uid);
-    });
-
+    // 6. 데이터 수정 및 삭제 바인딩 (window 객체에 할당하여 인라인 HTML 호출 대응)
     window.deleteData = async function(id) {
       if (!currentUser) return;
-      if (!confirm('삭제하시겠습니까?')) return;
-      await remove(ref(database, `users/${currentUser.uid}/items/${id}`));
+      if (!confirm('해당 아카이브 데이터를 완전히 삭제하시겠습니까?')) return;
+
+      try {
+        await remove(ref(database, `archive/${id}`));
+        setStatus('아카이브 데이터 삭제 완료');
+      } catch (error) {
+        console.error(error);
+        alert('삭제 처리에 실패했습니다.');
+      }
+    };
+
+    window.showEditForm = function(id, title, content) {
+      const itemBox = document.getElementById(`item-${id}`);
+      itemBox.innerHTML = `
+        <div class="edit-box">
+          <div class="form-label">📌 현상 질문 수정</div>
+          <input id="edit-title-${id}" type="text" value="${title}" />
+          <div class="form-label">📌 물리학적 해설 내용 직접 수정</div>
+          <textarea id="edit-content-${id}" rows="5">${content}</textarea>
+          <div class="edit-buttons">
+            <button class="save-btn" onclick="updateData('${id}')">💾 수정사항 저장</button>
+            <button class="cancel-btn" onclick="location.reload()">취소</button>
+          </div>
+        </div>
+      `;
     };
 
     window.updateData = async function(id) {
       if (!currentUser) return;
       const editTitle = document.getElementById(`edit-title-${id}`).value.trim();
       const editContent = document.getElementById(`edit-content-${id}`).value.trim();
-      await update(ref(database, `users/${currentUser.uid}/items/${id}`), {
-        title: editTitle, content: editContent, updatedAt: new Date().toLocaleString('ko-KR')
-      });
-    };
 
-    window.cancelEdit = function() {
-      if (currentUser) startRealtimeDataListener(currentUser.uid);
-    };
+      if (!editTitle || !editContent) return alert('모든 항목을 입력해야 수정이 가능합니다.');
 
-    function renderData(data) {
-      dataList.innerHTML = '';
-      if (!data) {
-        dataList.innerHTML = '<div class="empty">보관된 연구 로그가 없습니다.</div>';
-        return;
-      }
-      Object.entries(data).reverse().forEach(([id, item]) => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.id = `item-${id}`;
-        
-        // 인라인 이벤트 문자열 가공 방식을 개선하여 구문 오류 차단
-        const titleEscaped = escapeForAttribute(item.title || '');
-        const contentEscaped = escapeForAttribute(item.content || '');
-
-        div.innerHTML = `
-          <div>
-            <p class="item-title">${escapeHTML(item.title || '')}</p>
-            <p class="item-content">${escapeHTML(item.content || '')}</p>
-            <div class="item-date">${item.createdAt || '-'} ${item.updatedAt ? `/ 수정: ${item.updatedAt}` : ''}</div>
-          </div>
-          <div class="item-actions">
-            <button class="edit-btn" id="btn-edit-${id}">수정</button>
-            <button class="delete-btn" onclick="deleteData('${id}')">삭제</button>
-          </div>
-        `;
-        dataList.appendChild(div);
-
-        // 정적 동적 바인딩 충돌 방지를 위해 리스너 추가
-        document.getElementById(`btn-edit-${id}`).addEventListener('click', () => {
-          showEditForm(id, titleEscaped, contentEscaped);
+      try {
+        setStatus('아카이브 수정본 기록 중...');
+        await update(ref(database, `archive/${id}`), {
+          title: editTitle,
+          content: editContent,
+          updatedAt: new Date().toLocaleString('ko-KR')
         });
-      });
+      } catch (error) {
+        console.error(error);
+        alert('데이터 수정 기록 실패');
+      }
+    };
+
+    // 보안을 위한 문자열 이스케이프 유틸리티
+    function escapeHTML(text) {
+      return String(text)
+        .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
     }
 
-    window.showEditForm = function(id, title, content) {
-      document.getElementById(`item-${id}`).innerHTML = `
-        <div class="edit-box">
-          <input id="edit-title
+    function escapeForAttribute(text) {
+      return escapeHTML(text).replaceAll('`', '&#096;');
+    }
+
+    function getKoreanErrorMessage(code) {
+      switch (code) {
+        case 'auth/email-already-in-use': return '이미 등록된 연구원 계정(이메일)입니다.';
+        case 'auth/invalid-email': return '올바른 연구원 계정 양식(이메일 주소)이 아닙니다.';
+        case 'auth/weak-password': return '비밀번호 보안성이 낮습니다. 6자리 이상 설정하세요.';
+        case 'auth/invalid-credential': return '이메일 또는 비밀번호가 일치하지 않습니다.';
+        default: return `실험실 통제 오류: ${code}`;
+      }
+    }
+
+    // 엔터키 단축키 바인딩
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter' && document.activeElement.tagName === 'INPUT') {
+        const activeId = document.activeElement.id;
+        if (activeId === 'emailInput' || activeId === 'passwordInput') loginBtn.click();
+        if (activeId === 'titleInput') addBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
